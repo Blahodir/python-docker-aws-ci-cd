@@ -25,16 +25,6 @@ Cloud Provider: AWS (ECR, IAM, STS)
 
 Authentication: OIDC (Identity Federation)
 
-🏗 Project Structure
-
-├── .github/workflows/
-│   └── deploy.yml       # GitHub Actions CI/CD Pipeline
-├── app/
-│   └── main.py          # FastAPI Application logic
-├── Dockerfile           # Optimized Multi-stage Dockerfile
-├── requirements.txt     # Python dependencies
-└── README.md            # Documentation
-
 🔐 Security Highlights
 Passwordless AWS Authentication
 Instead of using static AWS_ACCESS_KEY_ID, this project leverages Identity Federation. GitHub Actions assumes a specific IAM Role dynamically via a short-lived token. This aligns with the Principle of Least Privilege.

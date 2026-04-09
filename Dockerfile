@@ -1,14 +1,19 @@
-# Stage 2: Фінальний образ
+# Етап 1: Збірка (називаємо його просто '0' або залишаємо без змін)
+FROM python:3.11-slim AS build_stage
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
+
+# Етап 2: Фінальний образ
 FROM python:3.11-slim
 WORKDIR /app
 
-# Копіюємо бібліотеки
-COPY --from=builder /install /usr/local
+# Копіюємо встановлені пакети з першого етапу
+COPY --from=build_stage /install /usr/local
+# Копіюємо код
+COPY main.py .
 
-# Копіюємо файл main.py прямо в робочу директорію /app
-COPY ./main.py /app/main.py
-
-# Безпека
+# Налаштування безпеки
 RUN useradd -m myuser
 USER myuser
 

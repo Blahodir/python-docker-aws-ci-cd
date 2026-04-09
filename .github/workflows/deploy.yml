@@ -5,68 +5,26 @@ on:
     branches: [ "main" ]
 
 permissions:
-  id-token: write   # Обов'язково для OIDC
-  contents: read    # Обов'язково для Checkout
+  id-token: write
+  contents: read
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      # 1. Беремо код з репозиторію
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 2. Авторизуємося в AWS через OIDC (БЕЗ ПАРОЛІВ!)
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: arn:aws:iam::365647375392:role/GitHubActions-CloudNative-Role
           aws-region: us-east-1
 
-      # 3. Логінимося в сам ECR
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
-      # 4. Збірка, тегування та Push образу
-      - name: Build, tag, and push image to Amazon ECR
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: fjordstep-repo
-          IMAGE_TAG: latest
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG1~name: Build and Push to AWS ECR
-
-on:
-  push:
-    branches: [ "main" ]
-
-permissions:
-  id-token: write   # Обов'язково для OIDC
-  contents: read    # Обов'язково для Checkout
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
-      
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: arn:aws:iam::365647375392:role/GitHubActions-CloudNative-Role
-          aws-region: us-east-1
-
-      
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v2
-
-      
       - name: Build, tag, and push image to Amazon ECR
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
